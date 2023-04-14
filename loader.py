@@ -1,9 +1,8 @@
-import pandas as pd
 import os
+ROOT = os.path.dirname(os.path.abspath(__file__))
 
+import pandas as pd
 from project import Project, Task
-
-ROOT = ROOT = os.path.dirname(os.path.abspath(__file__))
 
 def loadProjectFromFile(filepath: str) -> None:
     projectName =  os.path.basename(filepath).split('.')[0]
@@ -60,9 +59,8 @@ def loadProjectFromFile(filepath: str) -> None:
     print(project)
     project.tablePrint()
 
-
 def main():
-    filename = 'Villa_ekte.xlsx'
+    filename = 'resources/Villa_ekte.xlsx'
     filepath = os.path.join(ROOT, filename)
     loadProjectFromFile(filepath=filepath)
 
