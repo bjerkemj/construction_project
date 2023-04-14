@@ -35,7 +35,6 @@ class Project:
         for task in self.tasks:
             if task.code == code:
                 return task
-        print('Error: Task not found for code:' + code)
         return None
     
     def addTask(self, task: 'Task') -> None:
@@ -71,6 +70,8 @@ class Task:
     def __init__(self, type: str, code: str, description: str, durations: List[int], predecessors: List = []) -> None:
         self.type = type
         self.code = code
+        print(self.code)
+
         self.description = description
         self.durations = durations
         self.predecessors = []
