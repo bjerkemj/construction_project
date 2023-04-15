@@ -59,11 +59,37 @@ def loadProjectFromFile(filepath: str) -> None:
     project.calculateCriticalTasks()
     print(project)
     project.tablePrint()
+    return project
+
+def saveProjectToFile(project: Project, filename: str) -> None:
+    folderPath = os.path.join(ROOT, 'solutions')
+    if not os.path.exists(folderPath):
+        os.mkdir(folderPath)
+    columns=['Codes', 'Descriptions', 'Minimum Duration', 'Expected Duration', 'Maximum Duration', 'Predecessors', 'Successors' 'Early Start Date', 'Early Completion Date', 'Late Start Date', 'Late Completion Date', 'Critical']
+    df = pd.DataFrame(columns)
+    counter = 0
+    print(df)
+    for task in project.tasks:
+        print(counter)
+        df.loc[counter] = [task.code, task.description, task.durations[0], task.durations[1], task.durations[2], ', '.join([predecessor.code for predecessor in task.predecessors]), ', '.join([successor.code for successor in task.successors]), task.earlyStartDate, task.earlyCompletionDate, task.lateStartDate, task.lateCompletionDate, task.critical]
+        counter += 1
+
+    df.to_excel(os.path.join(folderPath, filename), index=False)
+
+    
 
 def main():
-    filename = 'Villa_ekte.xlsx'
-    filepath = os.path.join(ROOT, 'resources', filename)
-    loadProjectFromFile(filepath=filepath)
+    print('a')
+    print(len('. '.join([])))
+    print('b')
+    # filename = 'Villa_ekte.xlsx'
+    # filepath = os.path.join(ROOT, 'resources', filename)
+    # project = loadProjectFromFile(filepath=filepath)
+    # saveProjectToFile(project=project, filename=filename)
+
+
+
+
 
 if __name__ == '__main__':
     main()
