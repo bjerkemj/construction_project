@@ -81,6 +81,12 @@ class Project:
     def calculateCriticalTasks(self) -> None:
         for task in self.tasks:
             task.isCritical()
+
+    def drawRandomSample(self, r: float = 1) -> None:
+        for task in self.tasks:
+            task.setRandomizedDurations(r)
+        self.calculateDates()
+        self.calculateCriticalTasks()
     
 class Task:
     
@@ -103,6 +109,13 @@ class Task:
 
     def setType(self, type: str) -> None:
         self.type = type
+
+    def randomizeDuration(self) -> None:
+        self.randomDuration = random.triangular(self.durations[0], self.durations[2], self.durations[1])
+
+    def setRandomizedDurations(self, r: float = 1) -> None:
+        self.durations[1] = min(self.durations[2], max(self.durations[0], self.durations[1]*r))
+        self.randomizeDuration()
 
     def setCode(self, code: str) -> None:
         self.code = code
