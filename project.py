@@ -44,7 +44,7 @@ class Project:
         taskCopy = self.tasks.copy()
         while len(taskCopy) > 0:
             for idx, task in enumerate(taskCopy):
-                if all([predecessor not in taskCopy for predecessor in task.getPredecessors()]) | (len(task.getPredecessors()) == 0):
+                if all([predecessor not in taskCopy for predecessor in task.getPredecessors()]) or (len(task.getPredecessors()) == 0):
                     taskCopy.pop(idx).calculateEarlyDates()
                     break
 
@@ -52,7 +52,7 @@ class Project:
         taskCopy = self.tasks.copy()[::-1]
         while len(taskCopy) > 0:
             for idx, task in enumerate(taskCopy):
-                if all([successor not in taskCopy for successor in task.getSuccessors()]) | (len(task.getSuccessors()) == 0):
+                if all([successor not in taskCopy for successor in task.getSuccessors()]) or (len(task.getSuccessors()) == 0):
                     taskCopy.pop(idx).calculateLateDates()
                     break
 
@@ -153,7 +153,7 @@ class Task:
             self.lateCompletionDate = self.earlyCompletionDate
             self.lateStartDate = self.earlyCompletionDate - self.durations[durationIndex]
         else:
-            self.lateCompletionDate = max([successor.getLateStartDate() for successor in self.successors])
+            self.lateCompletionDate = min([successor.getLateStartDate() for successor in self.successors])
             self.lateStartDate = self.lateCompletionDate - self.durations[durationIndex]
 
     def isCritical(self) -> bool:
