@@ -13,7 +13,7 @@ class ProjectSimulator():
         self.project.calculateDates(durationIndex= 1)
         self.expectedDuration = project.getLateProjectDuration()
 
-    def simulateNProjects(self, n: int = 1000) -> None:
+    def simulateNProjects(self, n: int = 1000) -> List[int]:
         projectDurationList = []
         for i in range(n):
             projectCopy = copy.deepcopy(self.project)
@@ -34,7 +34,7 @@ class ProjectSimulator():
     def calculateCategoryStatistics(self, projectDurationsList: List[float]) -> List[float]:
         pass
     
-    def print_statistics(self, statistics):
+    def printStatistics(self, statistics):
         # Define column widths and separator character
         widths = [20, 20, 20, 20, 20, 20]
         separator = '-' * sum(widths)
@@ -63,7 +63,7 @@ def main():
         projectDurationsList = projectSimulator.simulateNProjects(n=1000)
         statistics = projectSimulator.calculateStatistics(projectDurationsList=projectDurationsList)
         print(f'For r = {r}, the statistics are:')
-        projectSimulator.print_statistics(statistics)
+        projectSimulator.printStatistics(statistics)
         
 
 
