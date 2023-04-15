@@ -1,5 +1,4 @@
-
-
+import random
 from typing import List
 
 
@@ -8,6 +7,8 @@ class Project:
     def __init__(self, name: str) -> None:
         self.name = name
         self.tasks = []
+        self.earlyProjectDuration = None
+        self.lateProjectDuration = None
 
     def __repr__(self) -> str:
         tasksString = ''
@@ -22,11 +23,11 @@ class Project:
         formatted_strings = [ "Task".rjust(lengths[0]),
                             "Type".rjust(lengths[1]),
                             "Duration".rjust(lengths[2]),
-                            "Early Start".rjust(lengths[2]),
-                            "Early Completion".rjust(lengths[3]),
-                            "Late Start".rjust(lengths[4]),
-                            "Late Completion".rjust(lengths[5]),
-                            "Critical".rjust(lengths[6]) ]
+                            "Early Start".rjust(lengths[3]),
+                            "Early Completion".rjust(lengths[4]),
+                            "Late Start".rjust(lengths[5]),
+                            "Late Completion".rjust(lengths[6]),
+                            "Critical".rjust(lengths[7]) ]
         print('\t'.join(formatted_strings))
         for task in self.tasks:
             print(task.tablePrint())
@@ -40,28 +41,44 @@ class Project:
     def addTask(self, task: 'Task') -> None:
         self.tasks.append(task)
     
-    def calculateEarlyDates(self, durationIndex: int = 1) -> None:
+    def calculateEarlyDates(self, durationIndex: int = -1) -> None:
         taskCopy = self.tasks.copy()
         while len(taskCopy) > 0:
             for idx, task in enumerate(taskCopy):
                 if all([predecessor not in taskCopy for predecessor in task.getPredecessors()]) or (len(task.getPredecessors()) == 0):
-                    taskCopy.pop(idx).calculateEarlyDates()
+                    taskCopy.pop(idx).calculateEarlyDates(durationIndex)
                     break
 
-    def calculateLateDates(self, durationIndex: int = 1) -> None:
+    def calculateLateDates(self, durationIndex: int = -1) -> None:
         taskCopy = self.tasks.copy()[::-1]
         while len(taskCopy) > 0:
             for idx, task in enumerate(taskCopy):
                 if all([successor not in taskCopy for successor in task.getSuccessors()]) or (len(task.getSuccessors()) == 0):
-                    taskCopy.pop(idx).calculateLateDates()
+                    taskCopy.pop(idx).calculateLateDates(durationIndex)
                     break
 
-    def calculateDates(self, durationIndex: int = 1) -> None:
+    def calculateDates(self, durationIndex: int = -1) -> None:
         self.calculateEarlyDates(durationIndex)
         self.calculateLateDates(durationIndex)
+        self.calculateProjectDurations()
+
+    def calculateProjectDurations(self) -> None:
+        self.calculateEarlyProjectDuration()
+        self.calculateLateProjectDuration()
+
+    def calculateEarlyProjectDuration(self) -> None:
+        self.earlyProjectDuration = max([task.getEarlyCompletionDate() for task in self.tasks])
+
+    def calculateLateProjectDuration(self) -> None:
+        self.lateProjectDuration = max([task.getLateCompletionDate() for task in self.tasks])
+
+    def getEarlyProjectDuration(self) -> float:
+        return self.earlyProjectDuration
+    
+    def getLateProjectDuration(self) -> float:
+        return self.lateProjectDuration
 
     def calculateCriticalTasks(self) -> None:
-        self.calculateDates() # Kanskje fjerne denne?
         for task in self.tasks:
             task.isCritical()
     
@@ -70,8 +87,6 @@ class Task:
     def __init__(self, type: str, code: str, description: str, durations: List[int], predecessors: List = []) -> None:
         self.type = type
         self.code = code
-        print(self.code)
-
         self.description = description
         self.durations = durations
         self.predecessors = []
@@ -83,6 +98,8 @@ class Task:
         self.lateStartDate = None
         self.lateCompletionDate = None
         self.critical = False
+        self.randomDuration = random.triangular(durations[0], durations[2], durations[1])
+        self.duration = None
 
     def setType(self, type: str) -> None:
         self.type = type
@@ -139,22 +156,30 @@ class Task:
     def getLateCompletionDate(self) -> int:        
         return self.lateCompletionDate
     
-    def calculateEarlyDates(self, durationIndex: int = 1) -> None:
+    def calculateEarlyDates(self, durationIndex: int = -1) -> None:
+        if durationIndex == -1:
+            self.duration = self.randomDuration
+        else:
+            self.duration = self.durations[durationIndex]
         if len(self.predecessors) == 0:
             self.earlyStartDate = 0
-            self.earlyCompletionDate = self.durations[durationIndex]
+            self.earlyCompletionDate = self.duration
         else:
             self.earlyStartDate = max([predecessor.getEarlyCompletionDate() for predecessor in self.predecessors])
-            self.earlyCompletionDate = self.earlyStartDate + self.durations[durationIndex]
+            self.earlyCompletionDate = self.earlyStartDate + self.duration
 
 
-    def calculateLateDates(self, durationIndex: int = 1) -> None:
+    def calculateLateDates(self, durationIndex: int = -1) -> None:
+        if durationIndex == -1:
+            self.duration = self.randomDuration
+        else:
+            self.duration = self.durations[durationIndex]
         if len(self.successors) == 0:
             self.lateCompletionDate = self.earlyCompletionDate
-            self.lateStartDate = self.earlyCompletionDate - self.durations[durationIndex]
+            self.lateStartDate = self.earlyCompletionDate - self.duration
         else:
             self.lateCompletionDate = min([successor.getLateStartDate() for successor in self.successors])
-            self.lateStartDate = self.lateCompletionDate - self.durations[durationIndex]
+            self.lateStartDate = self.lateCompletionDate - self.duration
 
     def isCritical(self) -> bool:
         self.critical = (self.earlyStartDate == self.lateStartDate) and (self.earlyStartDate != None)
@@ -168,14 +193,13 @@ class Task:
     
     def tablePrint(self) -> str:
         lengths = [5, 5, 8, 11, 16, 11, 16, 8]
-        formatted_strings = [str(self.code).rjust(lengths[0]),
-                         str(self.type).rjust(lengths[1]),
-                         str(self.durations[1]).rjust(lengths[2]),
-                         str(self.earlyStartDate).rjust(lengths[2]),
-                         str(self.earlyCompletionDate).rjust(lengths[3]),
-                         str(self.lateStartDate).rjust(lengths[4]),
-                         str(self.lateCompletionDate).rjust(lengths[5]),
-                         str(self.critical).rjust(lengths[6])]
+        critical = str(self.critical)
+        formatted_strings = [str(round(elem, 2)).rjust(lengths[i]) 
+                            if isinstance(elem, (float, int)) 
+                            else str(elem).rjust(lengths[i])
+                            for i, elem in enumerate([self.code, self.type, self.randomDuration,
+                                                    self.earlyStartDate, self.earlyCompletionDate,
+                                                    self.lateStartDate, self.lateCompletionDate, critical])]
         return '\t'.join(formatted_strings)
     
         

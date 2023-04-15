@@ -1,20 +1,15 @@
 import os
+import random
 import pandas as pd
 from project import Project, Task
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
-def loadProjectFromFile(filepath: str) -> None:
+def loadProjectFromFile(filepath: str) -> Project:
     projectName =  os.path.basename(filepath).split('.')[0]
     df = pd.read_excel(filepath)
-    print(df)
-    print('df finished')
-    print()
     df.dropna(axis = 0, how = 'all', inplace = True)
-    print(df)
-    print('df finished')
-    print()
     project = Project(projectName)
     if 'Descriptions' in df.columns:
         df.rename(columns={'Descriptions': 'Description'}, inplace=True)
@@ -55,36 +50,29 @@ def loadProjectFromFile(filepath: str) -> None:
         task = Task(type = row[0], code = row['Codes'].strip(), description = row['Description'], durations = durations, predecessors=predecessors)
         project.addTask(task)
 
-    project.calculateDates()
-    project.calculateCriticalTasks()
-    print(project)
-    project.tablePrint()
     return project
 
 def saveProjectToFile(project: Project, filename: str) -> None:
     folderPath = os.path.join(ROOT, 'solutions')
     if not os.path.exists(folderPath):
         os.mkdir(folderPath)
-    columns=['Codes', 'Descriptions', 'Minimum Duration', 'Expected Duration', 'Maximum Duration', 'Predecessors', 'Successors' 'Early Start Date', 'Early Completion Date', 'Late Start Date', 'Late Completion Date', 'Critical']
-    df = pd.DataFrame(columns)
-    counter = 0
-    print(df)
-    for task in project.tasks:
-        print(counter)
-        df.loc[counter] = [task.code, task.description, task.durations[0], task.durations[1], task.durations[2], ', '.join([predecessor.code for predecessor in task.predecessors]), ', '.join([successor.code for successor in task.successors]), task.earlyStartDate, task.earlyCompletionDate, task.lateStartDate, task.lateCompletionDate, task.critical]
-        counter += 1
+    columns=['Codes', 'Descriptions', 'Minimum Duration', 'Expected Duration', 'Maximum Duration', 'Predecessors', 'Successors', 'Early Start Date', 'Early Completion Date', 'Late Start Date', 'Late Completion Date', 'Critical']
+    df = pd.DataFrame(columns = columns)
+    for idx, task in enumerate(project.tasks):
+        df.loc[idx] = [task.code, task.description, task.durations[0], task.durations[1], task.durations[2], ', '.join([predecessor.code for predecessor in task.predecessors]), ', '.join([successor.code for successor in task.successors]), task.earlyStartDate, task.earlyCompletionDate, task.lateStartDate, task.lateCompletionDate, task.critical]
 
     df.to_excel(os.path.join(folderPath, filename), index=False)
 
     
 
 def main():
-    print('a')
-    print(len('. '.join([])))
-    print('b')
-    # filename = 'Villa_ekte.xlsx'
-    # filepath = os.path.join(ROOT, 'resources', filename)
-    # project = loadProjectFromFile(filepath=filepath)
+    random.seed(1)
+    filename = 'Warehouse.xlsx'
+    filepath = os.path.join(ROOT, 'resources', filename)
+    project = loadProjectFromFile(filepath=filepath)
+    project.calculateDates()
+    project.calculateCriticalTasks()
+    project.tablePrint()
     # saveProjectToFile(project=project, filename=filename)
 
 
