@@ -28,27 +28,24 @@ class ProjectSimulator():
         standardDeviation = (sum([(projectDuration - meanProjectDuration)**2 for projectDuration in projectDurationsList])/len(projectDurationsList))**0.5
         lowerDecile = projectDurationsList[int(len(projectDurationsList)*0.1)]
         upperDecile = projectDurationsList[int(len(projectDurationsList)*0.9)]
-        return [minProjectDuration, maxProjectDuration, meanProjectDuration, standardDeviation, lowerDecile, upperDecile]
-    
-    def calculateCategoryStatistics(self, projectDurationsList: List[float]) -> List[int]:
         successful = len([duration for duration in projectDurationsList if duration < self.expectedDuration * 1.05])
         acceptable = len([duration for duration in projectDurationsList if duration < self.expectedDuration * 1.15 ]) - successful
         failed = len(projectDurationsList) - successful - acceptable
-        return [successful, acceptable, failed]
+        return [minProjectDuration, maxProjectDuration, meanProjectDuration, standardDeviation, lowerDecile, upperDecile, successful, acceptable, failed]
 
-    def print_statistics(self, statistics):
+    def printStatistics(self, statistics):
         # Define column widths and separator character
-        widths = [20, 20, 20, 20, 20, 20]
-        separator = '-' * sum(widths)
+        widths = [15, 15, 15, 15, 15, 15, 15, 15, 15]
+        separator = '-' * (10 + sum(widths))
 
         # Print header row
         print(separator)
-        print('|{:^20}|{:^20}|{:^20}|{:^20}|{:^20}|{:^20}|'.format(
-            'Min Duration', 'Max Duration', 'Mean Duration', 'Std Deviation', 'Lower Decile', 'Upper Decile'))
+        print('|{:^15}|{:^15}|{:^15}|{:^15}|{:^15}|{:^15}|{:^15}|{:^15}|{:^15}|'.format(
+            'Min Duration', 'Max Duration', 'Mean Duration', 'Std Dev', 'Lower Decile', 'Upper Decile', 'Successful', 'Accepted', 'Fail'))
         print(separator)
 
         # Print data rows
-        print('|{:^20.2f}|{:^20.2f}|{:^20.2f}|{:^20.2f}|{:^20.2f}|{:^20.2f}|'.format(
+        print('|{:^15.2f}|{:^15.2f}|{:^15.2f}|{:^15.2f}|{:^15.2f}|{:^15.2f}|{:^15}|{:^15}|{:^15}|'.format(
             *statistics))
         print(separator)
 
@@ -64,10 +61,8 @@ class ProjectSimulator():
             projectSimulator = ProjectSimulator(project=project, r=r)
             projectDurationsList = projectSimulator.simulateNProjects(n=1000)
             statistics = projectSimulator.calculateStatistics(projectDurationsList=projectDurationsList)
-            catergories = projectSimulator.calculateCategoryStatistics(projectDurationsList)
-            
             print(f'For r = {r}, the statistics are:')
-            projectSimulator.print_statistics(statistics)    
+            projectSimulator.printStatistics(statistics)    
 
 def main():
     ProjectSimulator.task_4()
