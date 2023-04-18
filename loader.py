@@ -5,7 +5,6 @@ from project import Project, Task
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
-
 def loadProjectFromFile(filepath: str) -> Project:
     projectName =  os.path.basename(filepath).split('.')[0]
     df = pd.read_excel(filepath)
@@ -15,7 +14,7 @@ def loadProjectFromFile(filepath: str) -> Project:
         df.rename(columns={'Descriptions': 'Description'}, inplace=True)
     unProcesedRows = []
 
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         if unProcesedRows:
             oldRow = row
             for row in unProcesedRows.copy():
@@ -74,10 +73,6 @@ def main():
     project.calculateCriticalTasks()
     project.tablePrint()
     # saveProjectToFile(project=project, filename=filename)
-
-
-
-
 
 if __name__ == '__main__':
     main()

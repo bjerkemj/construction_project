@@ -62,10 +62,24 @@ class ProjectSimulator():
             projectDurationsList = projectSimulator.simulateNProjects(n=1000)
             statistics = projectSimulator.calculateStatistics(projectDurationsList=projectDurationsList)
             print(f'For r = {r}, the statistics are:')
-            projectSimulator.printStatistics(statistics)    
+            projectSimulator.printStatistics(statistics)
 
+    @staticmethod 
+    def task_5():
+        random.seed(1)
+        filename = 'Warehouse.xlsx'
+        filepath = os.path.join(ROOT, 'resources', filename)
+        project = loadProjectFromFile(filepath=filepath)
+        project.addGate("G1", "Milestone", predecessors=[project.getTask("F"), project.getTask("D")], successors=[project.getTask("G")])
+        project.calculateDates()
+        project.calculateCriticalTasks()
+        project.sortTasks()
+        project.tablePrint()
+
+
+        
 def main():
-    ProjectSimulator.task_4()
+    ProjectSimulator.task_5()
 
 if __name__ == '__main__':
     main()

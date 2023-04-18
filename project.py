@@ -1,9 +1,8 @@
 import random
+import math
 from typing import List
 
-
 class Project:
-
     def __init__(self, name: str) -> None:
         self.name = name
         self.tasks = []
@@ -87,6 +86,17 @@ class Project:
             task.setRandomizedDurations(r)
         self.calculateDates()
         self.calculateCriticalTasks()
+
+    def addGate(self, code: str, description: str, predecessors: List = [], successors: List = []) -> None:
+        gate = Task(type="Gate", code=code, description=description, durations=[0, 0, 0], predecessors=predecessors)
+        self.addTask(gate)
+        
+        for successor in successors:
+            gate.addSucessor(successor)
+            successor.addPredecessor(gate)
+
+    def sortTasks(self):
+        self.tasks.sort(key=lambda task: task.getEarlyCompletionDate()) 
     
 class Task:
     
@@ -195,7 +205,7 @@ class Task:
             self.lateStartDate = self.lateCompletionDate - self.duration
 
     def isCritical(self) -> bool:
-        self.critical = (self.earlyStartDate == self.lateStartDate) and (self.earlyStartDate != None)
+        self.critical = (math.isclose(self.earlyStartDate, self.lateStartDate, rel_tol = 0, abs_tol = 1e-6)) and (self.earlyStartDate != None)
         return self.critical
 
     def __repr__(self) -> str:
@@ -214,9 +224,6 @@ class Task:
                                                     self.earlyStartDate, self.earlyCompletionDate,
                                                     self.lateStartDate, self.lateCompletionDate, critical])]
         return '\t'.join(formatted_strings)
-    
-        
-    
 
 def main():
     p = Project('testProject')
