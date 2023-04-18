@@ -83,9 +83,9 @@ def getDotTextFromTree(project: Project) -> str:
     return string
 
 def addNode(string: str, task: Task) -> str:
-        string += f'\"{task.code.replace(".", "_")}\" [style = \"filled\" label = \"{task.code.replace(".", "_")}\"];\n'
+        string += f'\"{task.code.replace(".", "")}\" [style = \"filled\" label = \"{task.code.replace(".", "")}\"];\n'
         for predecessor in task.predecessors:
-            string += f'"{str(predecessor.code).replace(".", "_")}\" -> \"{str(task.code).replace(".", "_")}";\n'
+            string += f'"{str(predecessor.code).replace(".", "")}\" -> \"{str(task.code).replace(".", "")}";\n'
         return string
 
 

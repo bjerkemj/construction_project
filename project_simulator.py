@@ -96,7 +96,7 @@ class ProjectSimulator():
 
         
 def main():
-    ProjectSimulator.task_5()
+    ProjectSimulator.task_4()
 
 if __name__ == '__main__':
     main()
