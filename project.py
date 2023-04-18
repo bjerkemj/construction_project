@@ -111,6 +111,16 @@ class Project:
 
     def sortTasks(self):
         self.tasks.sort(key=lambda task: task.getEarlyCompletionDate()) 
+
+    def getEarlyCompletionDatesAfterTask(self, taskCode: str):
+        task = self.getTask(taskCode)
+        time = task.getEarlyCompletionDate()
+        return [task.getEarlyCompletionDate() for task in self.tasks if task.getEarlyCompletionDate() > time]
+    
+    def getEarlyCompletionsDatesBeforeTask(self, taskCode: str):
+        task = self.getTask(taskCode)
+        time = task.getEarlyCompletionDate()
+        return [task.getEarlyCompletionDate() for task in self.tasks if task.getEarlyCompletionDate() < time]
     
 class Task:
     
