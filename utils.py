@@ -96,7 +96,7 @@ def deleteAllPngs(self):
             os.remove(file)
 
 
-def deleteAllDots(self):
+def deleteAllDots():
     path = os.getcwd()
     for file in os.listdir(path):
         if file.endswith('.dot'):
@@ -109,14 +109,12 @@ def main():
     filename = 'Villa.xlsx'
     filepath = os.path.join(ROOT, 'resources', filename)
     project = loadProjectFromFile(filepath=filepath)
-    project.addGate("GATE1", "Milestone", ["H.2", "H.3"])
+    # project.addGate("GATE1", "Milestone", ["H.2", "H.3"])
     project.calculateDates()
     project.calculateCriticalTasks()
     project.sortTasks()
     project.tablePrint()
-
-    
-    saveProjectToFile(project=project, filename=filename)
+    # saveProjectToFile(project=project, filename = filename)
     # generateDotFileFromTree(project=project, filename='Villa')
     # createPNGfromDotFile(filename='Villa')
 
