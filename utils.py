@@ -106,7 +106,7 @@ def deleteAllDots(self):
 
 def main():
     random.seed(1)
-    filename = 'Villa.xlsx'
+    filename = 'Warehouse.xlsx'
     filepath = os.path.join(ROOT, 'resources', filename)
     project = loadProjectFromFile(filepath=filepath)
     project.calculateDates()

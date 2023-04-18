@@ -2,7 +2,7 @@ import os
 from typing import List
 from project import Project
 import copy
-from loader import loadProjectFromFile, ROOT
+from utils import loadProjectFromFile, ROOT
 import random
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
