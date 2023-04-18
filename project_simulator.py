@@ -172,6 +172,8 @@ class ProjectSimulator():
         filepath = os.path.join(ROOT, 'resources', filename)
         project = loadProjectFromFile(filepath=filepath)
         project.addGate("GATE1", "Milestone", ["H.2", "H.3"])
+        #project.addGate("GATE1", "Milestone", ["D.1"])
+        #project.addGate("GATE1", "Milestone", ["Q.1"])
         project.calculateDates()
         project.calculateCriticalTasks()
 
@@ -205,6 +207,8 @@ class ProjectSimulator():
         filepath = os.path.join(ROOT, 'resources', filename)
         project = loadProjectFromFile(filepath=filepath)
         project.addGate("GATE1", "Milestone", ["H.2", "H.3"])
+        # project.addGate("GATE1", "Milestone", ["D.1"])
+        # project.addGate("GATE1", "Milestone", ["Q.1"])
         project.calculateDates()
         project.calculateCriticalTasks()
 
