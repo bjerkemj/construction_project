@@ -1,21 +1,22 @@
+# Tinus F Alsos and Johan Bjerkem. Group: 3 1
+
 import os
+import copy
+import random
+import warnings
 from typing import List
+from project import Project
+from utils import loadProjectFromFile, ROOT
 
 from sklearn import svm
-from sklearn.ensemble import RandomForestRegressor
-from project import Project
-import copy
-from utils import loadProjectFromFile, ROOT
-import random
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
-
 from sklearn.metrics import accuracy_score, mean_squared_error
-import warnings
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.exceptions import ConvergenceWarning
-warnings.filterwarnings("ignore", category=ConvergenceWarning)
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.model_selection import train_test_split
 
+warnings.filterwarnings("ignore", category=ConvergenceWarning)
 
 class ProjectSimulator():
     def __init__(self, project: Project, r: float = 1.0) -> None:
@@ -28,12 +29,12 @@ class ProjectSimulator():
         projectDurationList = []
         if gateCode:
             beforeGateTimes = []
-        for i in range(n):
+        for _ in range(n):
             projectCopy = copy.deepcopy(self.project)
             projectCopy.drawRandomSample(r=self.r)
             projectDurationList.append(projectCopy.getLateProjectDuration())
             if gateCode:
-                beforeGateTimes.append(projectCopy.getEarlyCompletionsDatesBeforeTask(gateCode))
+                beforeGateTimes.append(projectCopy.getEarlyCompletionDatesBeforeTask(gateCode))
         return (projectDurationList, beforeGateTimes) if gateCode else projectDurationList
     
     def classifyProjects(self, projectDurationsList) -> List[str]:
@@ -61,24 +62,19 @@ class ProjectSimulator():
         return [minProjectDuration, maxProjectDuration, meanProjectDuration, standardDeviation, lowerDecile, upperDecile, successful, acceptable, failed]
 
     def printStatistics(self, statistics):
-        # Define column widths and separator character
         widths = [15, 15, 15, 15, 15, 15, 15, 15, 15]
         separator = '-' * (10 + sum(widths))
 
-        # Print header row
         print(separator)
         print('|{:^15}|{:^15}|{:^15}|{:^15}|{:^15}|{:^15}|{:^15}|{:^15}|{:^15}|'.format(
             'Min Duration', 'Max Duration', 'Mean Duration', 'Std Dev', 'Lower Decile', 'Upper Decile', 'Successful', 'Accepted', 'Fail'))
         print(separator)
 
-        # Print data rows
         print('|{:^15.2f}|{:^15.2f}|{:^15.2f}|{:^15.2f}|{:^15.2f}|{:^15.2f}|{:^15}|{:^15}|{:^15}|'.format(
             *statistics))
         print(separator)
 
     def logisticRegression(self, data, categories):
-        # encoded_categories = [0 if category == 'A' else 1 for category in categories]
-
         X_train, X_test, y_train, y_test = train_test_split(data, categories, test_size=0.2, random_state=42)
 
         model = LogisticRegression()
@@ -91,8 +87,6 @@ class ProjectSimulator():
         print(f"Accuracy: {accuracy}")
 
     def decisionTree(self, data, categories):
-        # encoded_categories = [0 if category == 'A' else 1 for category in categories]
-
         X_train, X_test, y_train, y_test = train_test_split(data, categories, test_size=0.2, random_state=42)
 
         model = DecisionTreeClassifier(random_state=42)
@@ -105,12 +99,9 @@ class ProjectSimulator():
         print(f"Accuracy: {accuracy}")
 
     def SVC(self, data, categories):
-        # encoded_categories = [0 if category == 'A' else 1 for category in categories]
-
         X_train, X_test, y_train, y_test = train_test_split(data, categories, test_size=0.2, random_state=42)
 
         model = svm.SVC()
-        # model = DecisionTreeClassifier()
 
         model.fit(X_train, y_train)
 
@@ -120,8 +111,6 @@ class ProjectSimulator():
         print(f"Accuracy: {accuracy}")
 
     def linearRegression(self, data, durations):
-        # encoded_durations = [0 if category == 'A' else 1 for category in durations]
-
         X_train, X_test, y_train, y_test = train_test_split(data, durations, test_size=0.2, random_state=42)
 
         model = LinearRegression()
@@ -134,8 +123,6 @@ class ProjectSimulator():
         print(f"Accuracy: {accuracy}")
 
     def decisionTreeRegressor(self, data, durations):
-        # encoded_durations = [0 if category == 'A' else 1 for category in durations]
-
         X_train, X_test, y_train, y_test = train_test_split(data, durations, test_size=0.2, random_state=42)
 
         model = DecisionTreeRegressor(random_state=42)
@@ -148,8 +135,6 @@ class ProjectSimulator():
         print(f"Accuracy: {accuracy}")
 
     def randomForest(self, data, durations):
-        # encoded_durations = [0 if category == 'A' else 1 for category in durations]
-
         X_train, X_test, y_train, y_test = train_test_split(data, durations, test_size=0.2, random_state=42)
 
         model = RandomForestRegressor(random_state=42)
@@ -160,8 +145,6 @@ class ProjectSimulator():
 
         accuracy = mean_squared_error(y_test, predictions)
         print(f"Accuracy: {accuracy}")
-
-    
 
     @staticmethod
     def task_4():
@@ -189,8 +172,6 @@ class ProjectSimulator():
         filepath = os.path.join(ROOT, 'resources', filename)
         project = loadProjectFromFile(filepath=filepath)
         project.addGate("GATE1", "Milestone", ["H.2", "H.3"])
-        # project.addGate("GATE2", "Milestone", ["O.4", "O.5"])
-        # project.addGate("GATE3", "Milestone", ["Q.3"])
         project.calculateDates()
         project.calculateCriticalTasks()
 
@@ -215,7 +196,6 @@ class ProjectSimulator():
         print(f'Running support vector classification on {numSamples} samples and gate placed before tasks H.2 and H.3')
         projectSimulator.SVC(beforeTimes, classif)
 
-
     @staticmethod 
     def task_6():
         print('REGRESSION')
@@ -225,8 +205,6 @@ class ProjectSimulator():
         filepath = os.path.join(ROOT, 'resources', filename)
         project = loadProjectFromFile(filepath=filepath)
         project.addGate("GATE1", "Milestone", ["H.2", "H.3"])
-        # project.addGate("GATE2", "Milestone", ["O.4", "O.5"])
-        # project.addGate("GATE3", "Milestone", ["Q.3"])
         project.calculateDates()
         project.calculateCriticalTasks()
 
@@ -249,10 +227,6 @@ class ProjectSimulator():
 
         print(f'Running random forrest regression on {numSamples} samples and gate placed before tasks H.2 and H.3')
         projectSimulator.randomForest(beforeTimes, durations)
-
-
-
-
         
 def main():
     ProjectSimulator.task_4()

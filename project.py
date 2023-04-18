@@ -1,3 +1,5 @@
+# Tinus F Alsos and Johan Bjerkem. Group: 3 1
+
 import random
 import math
 from typing import List
@@ -61,15 +63,15 @@ class Project:
         self.calculateLateDates(durationIndex)
         self.calculateProjectDurations()
 
-    def calculateProjectDurations(self) -> None:
-        self.calculateEarlyProjectDuration()
-        self.calculateLateProjectDuration()
-
     def calculateEarlyProjectDuration(self) -> None:
         self.earlyProjectDuration = max([task.getEarlyCompletionDate() for task in self.tasks])
 
     def calculateLateProjectDuration(self) -> None:
         self.lateProjectDuration = max([task.getLateCompletionDate() for task in self.tasks])
+
+    def calculateProjectDurations(self) -> None:
+        self.calculateEarlyProjectDuration()
+        self.calculateLateProjectDuration()
 
     def getEarlyProjectDuration(self) -> float:
         return self.earlyProjectDuration
@@ -87,14 +89,6 @@ class Project:
         self.calculateDates()
         self.calculateCriticalTasks()
 
-    def addGate(self, code: str, description: str, predecessors: List = [], successors: List = []) -> None:
-        gate = Task(type="Gate", code=code, description=description, durations=[0, 0, 0], predecessors=predecessors)
-        self.addTask(gate)
-        
-        for successor in successors:
-            gate.addSucessor(successor)
-            successor.addPredecessor(gate)
-
     def addGate(self, code: str, description: str, predecessorsNames: List = []) -> None:
         predecessors = [self.getTask(predecessor) for predecessor in predecessorsNames]
         successors = predecessors[0].getSuccessors()
@@ -111,19 +105,13 @@ class Project:
 
     def sortTasks(self):
         self.tasks.sort(key=lambda task: task.getEarlyCompletionDate()) 
-
-    def getEarlyCompletionDatesAfterTask(self, taskCode: str):
-        task = self.getTask(taskCode)
-        time = task.getEarlyCompletionDate()
-        return [task.getEarlyCompletionDate() for task in self.tasks if task.getEarlyCompletionDate() > time]
     
-    def getEarlyCompletionsDatesBeforeTask(self, taskCode: str):
+    def getEarlyCompletionDatesBeforeTask(self, taskCode: str):
         task = self.getTask(taskCode)
         time = task.getEarlyCompletionDate()
         return [task.getEarlyCompletionDate() for task in self.tasks if task.getEarlyCompletionDate() < time]
     
 class Task:
-    
     def __init__(self, type: str, code: str, description: str, durations: List[int], predecessors: List = []) -> None:
         self.type = type
         self.code = code
@@ -221,7 +209,6 @@ class Task:
             self.earlyStartDate = max([predecessor.getEarlyCompletionDate() for predecessor in self.predecessors])
             self.earlyCompletionDate = self.earlyStartDate + self.duration
 
-
     def calculateLateDates(self, durationIndex: int = -1) -> None:
         if durationIndex == -1:
             self.duration = self.randomDuration
@@ -254,10 +241,3 @@ class Task:
                                                     self.earlyStartDate, self.earlyCompletionDate,
                                                     self.lateStartDate, self.lateCompletionDate, critical])]
         return '\t'.join(formatted_strings)
-
-def main():
-    p = Project('testProject')
-    print(p)
-
-if __name__ == '__main__':
-    main()
