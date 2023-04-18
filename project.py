@@ -95,6 +95,20 @@ class Project:
             gate.addSucessor(successor)
             successor.addPredecessor(gate)
 
+    def addGate(self, code: str, description: str, predecessorsNames: List = []) -> None:
+        predecessors = [self.getTask(predecessor) for predecessor in predecessorsNames]
+        successors = predecessors[0].getSuccessors()
+
+        for p in predecessors:
+            p.clearSucessors()
+        
+        gate = Task(type="Gate", code=code, description=description, durations=[0, 0, 0], predecessors=predecessors)
+        self.addTask(gate)
+
+        for s in successors:
+            s.clearPredecessors()
+            s.addPredecessor(gate)
+
     def sortTasks(self):
         self.tasks.sort(key=lambda task: task.getEarlyCompletionDate()) 
     
@@ -166,6 +180,12 @@ class Task:
         self.successors.append(successor)
         if self not in successor.predecessors:
             successor.addPredecessor(self)
+
+    def clearPredecessors(self) -> None:
+        self.predecessors = []
+
+    def clearSucessors(self) -> None:
+        self.successors = []
 
     def getEarlyStartDate(self) -> int:
         return self.earlyStartDate

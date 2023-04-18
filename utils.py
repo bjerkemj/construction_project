@@ -106,15 +106,19 @@ def deleteAllDots(self):
 
 def main():
     random.seed(1)
-    filename = 'Warehouse.xlsx'
+    filename = 'Villa.xlsx'
     filepath = os.path.join(ROOT, 'resources', filename)
     project = loadProjectFromFile(filepath=filepath)
+    project.addGate("GATE1", "Milestone", ["H.2", "H.3"])
     project.calculateDates()
     project.calculateCriticalTasks()
+    project.sortTasks()
     project.tablePrint()
-    # saveProjectToFile(project=project, filename=filename)
-    generateDotFileFromTree(project=project, filename='Villa')
-    createPNGfromDotFile(filename='Villa')
+
+    
+    saveProjectToFile(project=project, filename=filename)
+    # generateDotFileFromTree(project=project, filename='Villa')
+    # createPNGfromDotFile(filename='Villa')
 
 if __name__ == '__main__':
     main()
