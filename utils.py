@@ -106,7 +106,7 @@ def main():
     filename = 'Villa.xlsx'
     filepath = os.path.join(ROOT, 'resources', filename)
     project = loadProjectFromFile(filepath=filepath)
-    project.addGate("GATE1", "Milestone", ["H.2", "H.3"])
+    # project.addGate("GATE1", "Milestone", ["H.2", "H.3"])
     project.calculateDates()
     project.calculateCriticalTasks()
     project.sortTasks()
