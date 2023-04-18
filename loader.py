@@ -62,17 +62,59 @@ def saveProjectToFile(project: Project, filename: str) -> None:
 
     df.to_excel(os.path.join(folderPath, filename), index=False)
 
+
+def createPNGfromDotFile(filename: str) -> None:
+        os.system(f"dot -Tpng {filename}.dot > {filename}.png")
+
+def generateDotFileFromTree(project: Project, filename: str) -> None:
+    allText = getDotTextFromTree(project)
+    with open(filename + '.dot', 'w') as file:
+        file.write(
+            # "digraph g {\nfontname=\"Helvetica,Arial,sans-serif\"\nnode [fontname=\"Helvetica,Arial,sans-serif\" filledcolor = \"white\" label = \"\" style = \"filled\" shape = \"circle\" ]\nedge [fontname=\"Helvetica,Arial,sans-serif\"]\ngraph [fontsize=30 labelloc=\"t\" label=\"\" splines=true overlap=false];\nratio = auto;\n")
+            "digraph g {\nfontname=\"Helvetica,Arial,sans-serif\"\nnode [fontname=\"Helvetica,Arial,sans-serif\" filledcolor = \"white\" label = \"\" style = \"filled\" shape = \"circle\" ]\nedge [fontname=\"Helvetica,Arial,sans-serif\"]\ngraph [fontsize=30 labelloc=\"t\" label=\"\" splines=true overlap=false rankdir = \"LR\"];\nratio = auto;\n")
+        
+        file.write(allText)
+        file.write("\n}")
+
+def getDotTextFromTree(project: Project) -> str:
+    string = ""
+    for task in project.tasks:
+        string = addNode(string, task)
+    return string
+
+def addNode(string: str, task: Task) -> str:
+        string += f'\"{task.code.replace(".", "_")}\" [style = \"filled\" label = \"{task.code.replace(".", "_")}\"];\n'
+        for predecessor in task.predecessors:
+            string += f'"{str(predecessor.code).replace(".", "_")}\" -> \"{str(task.code).replace(".", "_")}";\n'
+        return string
+
+
+def deleteAllPngs(self):
+    path = os.getcwd()
+    for file in os.listdir(path):
+        if file.endswith('.png'):
+            os.remove(file)
+
+
+def deleteAllDots(self):
+    path = os.getcwd()
+    for file in os.listdir(path):
+        if file.endswith('.dot'):
+            os.remove(file)
+
     
 
 def main():
     random.seed(1)
-    filename = 'Warehouse.xlsx'
+    filename = 'Villa.xlsx'
     filepath = os.path.join(ROOT, 'resources', filename)
     project = loadProjectFromFile(filepath=filepath)
     project.calculateDates()
     project.calculateCriticalTasks()
     project.tablePrint()
     # saveProjectToFile(project=project, filename=filename)
+    generateDotFileFromTree(project=project, filename='Villa')
+    createPNGfromDotFile(filename='Villa')
 
 if __name__ == '__main__':
     main()

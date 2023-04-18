@@ -1,0 +1,34 @@
+digraph g {
+fontname="Helvetica,Arial,sans-serif"
+node [fontname="Helvetica,Arial,sans-serif" filledcolor = "white" label = "" style = "filled" shape = "circle" ]
+edge [fontname="Helvetica,Arial,sans-serif"]
+graph [fontsize=30 labelloc="t" label="" splines=true overlap=false rankdir = "LR"];
+ratio = auto;
+"Start" [style = "filled" label = "Start"];
+"A" [style = "filled" label = "A"];
+"Start" -> "A";
+"B" [style = "filled" label = "B"];
+"Start" -> "B";
+"C" [style = "filled" label = "C"];
+"A" -> "C";
+"D" [style = "filled" label = "D"];
+"A" -> "D";
+"B" -> "D";
+"E" [style = "filled" label = "E"];
+"A" -> "E";
+"F" [style = "filled" label = "F"];
+"C" -> "F";
+"G" [style = "filled" label = "G"];
+"D" -> "G";
+"F" -> "G";
+"H" [style = "filled" label = "H"];
+"E" -> "H";
+"J" [style = "filled" label = "J"];
+"G" -> "J";
+"K" [style = "filled" label = "K"];
+"H" -> "K";
+"J" -> "K";
+"End" [style = "filled" label = "End"];
+"K" -> "End";
+
+}
