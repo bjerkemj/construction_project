@@ -106,15 +106,20 @@ def main():
     filename = 'Villa.xlsx'
     filepath = os.path.join(ROOT, 'resources', filename)
     project = loadProjectFromFile(filepath=filepath)
+
+    # Uncomment the follolowing lines to add gates to the project
     # project.addGate("GATE1", "Milestone", ["H.2", "H.3"])
+    # project.addGate("GATE2", "Milestone", ["O.4", "O.5"])
+
     project.calculateDates()
     project.calculateCriticalTasks()
     project.sortTasks()
     project.tablePrint()
 
-    saveProjectToFile(project=project, filename=filename)
-    # generateDotFileFromTree(project=project, filename='Villa')
-    # createPNGfromDotFile(filename='Villa')
+    # saveProjectToFile(project=project, filename=filename)
+    # generateDotFileFromTree(project=project, filename='VillaWithTwoGates')
+    # createPNGfromDotFile(filename='VillaWithTwoGates')
+    # deleteAllDots()
 
 if __name__ == '__main__':
     main()
