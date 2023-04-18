@@ -1,4 +1,4 @@
-# Tinus F Alsos and Johan Bjerkem
+# Tinus F Alsos and Johan Bjerkem. Group: 3 1
 
 import os
 import copy
@@ -195,7 +195,6 @@ class ProjectSimulator():
 
         print(f'Running support vector classification on {numSamples} samples and gate placed before tasks H.2 and H.3')
         projectSimulator.SVC(beforeTimes, classif)
-
 
     @staticmethod 
     def task_6():

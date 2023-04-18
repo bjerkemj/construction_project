@@ -1,4 +1,4 @@
-# Tinus F Alsos and Johan Bjerkem
+# Tinus F Alsos and Johan Bjerkem. Group: 3 1
 
 import random
 import math
