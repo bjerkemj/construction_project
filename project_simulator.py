@@ -4,6 +4,10 @@ from project import Project
 import copy
 from loader import loadProjectFromFile, ROOT
 import random
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
 
 class ProjectSimulator():
     def __init__(self, project: Project, r: float = 1.0) -> None:
@@ -48,6 +52,19 @@ class ProjectSimulator():
         print('|{:^15.2f}|{:^15.2f}|{:^15.2f}|{:^15.2f}|{:^15.2f}|{:^15.2f}|{:^15}|{:^15}|{:^15}|'.format(
             *statistics))
         print(separator)
+
+    def logisticRegression(self, data, categories):
+        encoded_categories = [0 if category == 'A' else 1 for category in categories]
+
+        X_train, X_test, y_train, y_test = train_test_split(data, encoded_categories, test_size=0.2, random_state=42)
+
+        model = LogisticRegression()
+        model.fit(X_train, y_train)
+
+        predictions = model.predict(X_test)
+
+        accuracy = accuracy_score(y_test, predictions)
+        print(f"Accuracy: {accuracy}")
 
     @staticmethod
     def task_4():
