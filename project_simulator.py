@@ -1,3 +1,5 @@
+# Tinus F Alsos and Johan Bjerkem
+
 import os
 import copy
 import random

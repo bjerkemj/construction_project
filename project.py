@@ -1,3 +1,5 @@
+# Tinus F Alsos and Johan Bjerkem
+
 import random
 import math
 from typing import List

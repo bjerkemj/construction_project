@@ -1,3 +1,5 @@
+# Tinus F Alsos and Johan Bjerkem
+
 import os
 import random
 import pandas as pd
@@ -110,7 +112,6 @@ def main():
     project.sortTasks()
     project.tablePrint()
 
-    
     saveProjectToFile(project=project, filename=filename)
     # generateDotFileFromTree(project=project, filename='Villa')
     # createPNGfromDotFile(filename='Villa')
