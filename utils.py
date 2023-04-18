@@ -62,7 +62,6 @@ def saveProjectToFile(project: Project, filename: str) -> None:
 
     df.to_excel(os.path.join(folderPath, filename), index=False)
 
-
 def createPNGfromDotFile(filename: str) -> None:
         os.system(f"dot -Tpng {filename}.dot > {filename}.png")
 
@@ -70,7 +69,6 @@ def generateDotFileFromTree(project: Project, filename: str) -> None:
     allText = getDotTextFromTree(project)
     with open(filename + '.dot', 'w') as file:
         file.write(
-            # "digraph g {\nfontname=\"Helvetica,Arial,sans-serif\"\nnode [fontname=\"Helvetica,Arial,sans-serif\" filledcolor = \"white\" label = \"\" style = \"filled\" shape = \"circle\" ]\nedge [fontname=\"Helvetica,Arial,sans-serif\"]\ngraph [fontsize=30 labelloc=\"t\" label=\"\" splines=true overlap=false];\nratio = auto;\n")
             "digraph g {\nfontname=\"Helvetica,Arial,sans-serif\"\nnode [fontname=\"Helvetica,Arial,sans-serif\" filledcolor = \"white\" label = \"\" style = \"filled\" shape = \"circle\" ]\nedge [fontname=\"Helvetica,Arial,sans-serif\"]\ngraph [fontsize=30 labelloc=\"t\" label=\"\" splines=true overlap=false rankdir = \"LR\"];\nratio = auto;\n")
         
         file.write(allText)
@@ -88,21 +86,18 @@ def addNode(string: str, task: Task) -> str:
             string += f'"{str(predecessor.code).replace(".", "")}\" -> \"{str(task.code).replace(".", "")}";\n'
         return string
 
-
-def deleteAllPngs(self):
+def deleteAllPngs():
     path = os.getcwd()
     for file in os.listdir(path):
         if file.endswith('.png'):
             os.remove(file)
 
 
-def deleteAllDots(self):
+def deleteAllDots():
     path = os.getcwd()
     for file in os.listdir(path):
         if file.endswith('.dot'):
             os.remove(file)
-
-    
 
 def main():
     random.seed(1)
