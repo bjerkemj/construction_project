@@ -33,7 +33,7 @@ class ProjectSimulator():
             projectCopy.drawRandomSample(r=self.r)
             projectDurationList.append(projectCopy.getLateProjectDuration())
             if gateCode:
-                beforeGateTimes.append(projectCopy.getEarlyCompletionsDatesBeforeTask(gateCode))
+                beforeGateTimes.append(projectCopy.getEarlyCompletionDatesBeforeTask(gateCode))
         return (projectDurationList, beforeGateTimes) if gateCode else projectDurationList
     
     def classifyProjects(self, projectDurationsList) -> List[str]:
